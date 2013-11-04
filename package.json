@@ -1,15 +1,11 @@
 {
   "name": "tilelive-cache",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "description": "A caching wrapper for tilelive.js",
+  "author": "Seth Fitzsimmons <seth@mojodna.net>",
   "license": "BSD-2-Clause",
   "dependencies": {
     "tilelive": "~4.5.2",
-    "lru-cache": "~2.3.1"
+    "locking-cache": "~0.1.1"
   }
 }
