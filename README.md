@@ -7,12 +7,15 @@ and data produced by their respective `getTile()` functions.
 ## Usage
 
 ```javascript
-var tilelive = require("tilelive-cache");
+var tilelive = require("tilelive"),
+    cache = require("tilelive-cache")(tilelive, {
+  size: 50 // 50MB cache
+});
 
 // ...
 
 // initializes or loads a tilelive-mapnik source
-tilelive.load("mapnik://./stylesheet.xml", function(err, source) {
+cache.load("mapnik://./stylesheet.xml", function(err, source) {
   // ...
 
   // generates or loads a tile from the cache
@@ -25,5 +28,5 @@ tilelive.load("mapnik://./stylesheet.xml", function(err, source) {
 To warm the cache, call `load()` without a callback:
 
 ```javascript
-tilelive.load("mapnik://./stylesheet.xml");
+cache.load("mapnik://./stylesheet.xml");
 ```

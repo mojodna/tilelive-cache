@@ -3,25 +3,14 @@
 var url = require("url"),
     util = require("util");
 
-var lockingCache = require("locking-cache"),
-    tilelive = require("tilelive");
+var lockingCache = require("locking-cache");
 
-// defined outside enableCaching so that a single, shared cache will be used
-// (this requires that keys be namespaced appropriately)
-var lockedGetTile = lockingCache({
-  max: 10 * 1024 * 1024, // TODO 10MB, should be configurable
-  length: function(val) {
-    return (val[1] || "").length;
-  },
-  maxAge: 6 * 3600e3 // 6 hours
-});
-
-var enableCaching = function(uri, source) {
+var enableCaching = function(uri, source, locker) {
   uri = url.parse(uri);
 
   var rawGetTile = source.getTile;
 
-  source.getTile = lockedGetTile(function(z, x, y, lock) {
+  source.getTile = locker(function(z, x, y, lock) {
     var key = util.format("%s/%d/%d/%d", url.format(uri), z, x, y);
 
     return lock(key, function(unlock) {
@@ -33,27 +22,41 @@ var enableCaching = function(uri, source) {
   return source;
 };
 
-var cache = Object.create(tilelive);
+module.exports = function(tilelive, options) {
+  options = options || {};
 
-var lockedLoad = lockingCache({
-  max: 5, // TODO arbitrary, should be configurable
-  dispose: function(key, source) {
-    source.close();
-  }
-});
+  // defined outside enableCaching so that a single, shared cache will be used
+  // (this requires that keys be namespaced appropriately)
+  var locker = lockingCache({
+    max: 1024 * 1024 * (options.size || 10), // convert to MB
+    length: function(val) {
+      return val[1] ? val[1].length : 0;
+    },
+    maxAge: 6 * 3600e3 // 6 hours
+  });
 
-cache.load = lockedLoad(function(uri, lock) {
-  var key = url.format(uri);
+  var cache = Object.create(tilelive);
 
-  return lock(key, function(unlock) {
-    return tilelive.load(uri, function(err, source) {
-      if (!err) {
-        source = enableCaching(uri, source);
-      }
+  var lockedLoad = lockingCache({
+    max: 5, // TODO arbitrary, should be configurable
+    dispose: function(key, source) {
+      source.close();
+    }
+  });
 
-      return unlock(err, source);
+  cache.load = lockedLoad(function(uri, lock) {
+    var key = url.format(uri);
+
+    return lock(key, function(unlock) {
+      return tilelive.load(uri, function(err, source) {
+        if (!err) {
+          source = enableCaching(uri, source, locker);
+        }
+
+        return unlock(err, source);
+      });
     });
   });
-});
 
-module.exports = cache;
+  return cache;
+};
