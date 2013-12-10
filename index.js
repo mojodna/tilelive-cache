@@ -8,14 +8,36 @@ var lockingCache = require("locking-cache");
 var enableCaching = function(uri, source, locker) {
   uri = url.parse(uri);
 
-  var rawGetTile = source.getTile;
+  var _getTile = source.getTile;
 
   source.getTile = locker(function(z, x, y, lock) {
-    var key = util.format("%s/%d/%d/%d", url.format(uri), z, x, y);
+    var key = util.format("getTile:%s/%d/%d/%d", url.format(uri), z, x, y);
 
     return lock(key, function(unlock) {
       // .call is used so that getTile is correctly bound
-      return rawGetTile.call(source, z, x, y, unlock);
+      return _getTile.call(source, z, x, y, unlock);
+    });
+  }).bind(source);
+
+  var _getGrid = source.getGrid;
+
+  source.getGrid = locker(function(z, x, y, lock) {
+    var key = util.format("getGrid:%s/%d/%d/%d", url.format(uri), z, x, y);
+
+    return lock(key, function(unlock) {
+      // .call is used so that getGrid is correctly bound
+      return _getGrid.call(source, z, x, y, unlock);
+    });
+  }).bind(source);
+
+  var _getInfo = source.getInfo;
+
+  source.getInfo = locker(function(lock) {
+    var key = util.format("getInfo:%s", url.format(uri));
+
+    return lock(key, function(unlock) {
+      // .call is used so that getInfo is correctly bound
+      return _getInfo.call(source, unlock);
     });
   }).bind(source);
 
