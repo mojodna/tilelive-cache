@@ -6,7 +6,9 @@ var url = require("url"),
 var lockingCache = require("locking-cache");
 
 var enableCaching = function(uri, source, locker) {
-  uri = url.parse(uri);
+  if (typeof(uri) === "string") {
+    uri = url.parse(uri, true);
+  }
 
   var _getTile = source.getTile;
 
