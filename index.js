@@ -69,7 +69,7 @@ module.exports = function(tilelive, options) {
   });
 
   cache.load = lockedLoad(function(uri, lock) {
-    var key = url.format(uri);
+    var key = JSON.stringify(uri);
 
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
