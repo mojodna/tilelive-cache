@@ -62,7 +62,7 @@ module.exports = function(tilelive, options) {
   var cache = Object.create(tilelive);
 
   var lockedLoad = lockingCache({
-    max: 5, // TODO arbitrary, should be configurable
+    max: options.sources || 6,
     dispose: function(key, values) {
       // the source will always be the first value since it's the first
       // argument to unlock()
