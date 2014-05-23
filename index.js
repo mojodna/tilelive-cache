@@ -13,7 +13,7 @@ var enableCaching = function(uri, source, locker) {
   var _getTile = source.getTile;
 
   source.getTile = locker(function(z, x, y, lock) {
-    var key = util.format("getTile:%s/%d/%d/%d", url.format(uri), z, x, y);
+    var key = util.format("getTile:%s/%d/%d/%d", JSON.stringify(uri), z, x, y);
 
     return lock(key, function(unlock) {
       // .call is used so that getTile is correctly bound
@@ -24,7 +24,7 @@ var enableCaching = function(uri, source, locker) {
   var _getGrid = source.getGrid;
 
   source.getGrid = locker(function(z, x, y, lock) {
-    var key = util.format("getGrid:%s/%d/%d/%d", url.format(uri), z, x, y);
+    var key = util.format("getGrid:%s/%d/%d/%d", JSON.stringify(uri), z, x, y);
 
     return lock(key, function(unlock) {
       // .call is used so that getGrid is correctly bound
@@ -35,7 +35,7 @@ var enableCaching = function(uri, source, locker) {
   var _getInfo = source.getInfo;
 
   source.getInfo = locker(function(lock) {
-    var key = util.format("getInfo:%s", url.format(uri));
+    var key = util.format("getInfo:%s", JSON.stringify(uri));
 
     return lock(key, function(unlock) {
       // .call is used so that getInfo is correctly bound

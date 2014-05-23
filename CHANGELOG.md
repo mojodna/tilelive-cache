@@ -1,5 +1,9 @@
 # Changes
 
+## v0.1.2 - 5/22/14
+
+* Use `JSON.stringify()` everywhere.
+
 ## v0.1.1 - 5/22/14
 
 * Upgrade `locking-cache` to 0.1.2
