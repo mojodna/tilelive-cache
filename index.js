@@ -6,6 +6,12 @@ var url = require("url"),
 var lockingCache = require("locking-cache");
 
 var enableCaching = function(uri, source, locker) {
+  if (source._cached) {
+    // already cached
+
+    return source;
+  }
+
   if (typeof(uri) === "string") {
     uri = url.parse(uri, true);
   }
@@ -42,6 +48,11 @@ var enableCaching = function(uri, source, locker) {
       return _getInfo.call(source, unlock);
     });
   }).bind(source);
+
+  // TODO watch for collisions
+  // http://raganwald.com/2014/04/10/mixins-forwarding-delegation.html may have
+  // some ideas on how to prevent this
+  source._cached = true;
 
   return source;
 };

@@ -1,5 +1,9 @@
 # Changes
 
+## v0.2.0 - 5/22/14
+
+* Don't re-wrap sources that have already been cache-enabled
+
 ## v0.1.2 - 5/22/14
 
 * Use `JSON.stringify()` everywhere.
