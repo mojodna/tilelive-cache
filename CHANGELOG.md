@@ -2,6 +2,7 @@
 
 ## v0.1.1 - 5/22/14
 
+* Upgrade `locking-cache` to 0.1.2
 * Make the source cache size configurable via `options.sources` (and default it
   to 6).
 * Fix `dispose()` implementation to match `locking-cache`'s behavior.
