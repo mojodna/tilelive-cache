@@ -2,6 +2,7 @@
 
 ## v0.2.0 - 5/22/14
 
+* Include callback properties in cache keys
 * Don't re-wrap sources that have already been cache-enabled
 
 ## v0.1.2 - 5/22/14

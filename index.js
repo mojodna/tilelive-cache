@@ -16,12 +16,26 @@ var enableCaching = function(uri, source, locker) {
     uri = url.parse(uri, true);
   }
 
+  var makeKey = function(name, context) {
+    // collect properties attached to the callback
+    var properties = {};
+
+    Object.keys(context.callback).forEach(function(k) {
+      properties[k] = context.callback[k];
+    });
+
+    var key = util.format("%s:%j@%j", name, uri, properties);
+
+    // glue on any additional arguments using their JSON representation
+    key += Array.prototype.slice.call(arguments, 2).map(JSON.stringify).join(",");
+
+    return key;
+  };
+
   var _getTile = source.getTile;
 
   source.getTile = locker(function(z, x, y, lock) {
-    var key = util.format("getTile:%s/%d/%d/%d", JSON.stringify(uri), z, x, y);
-
-    return lock(key, function(unlock) {
+    return lock(makeKey("getTile", this, z, x, y), function(unlock) {
       // .call is used so that getTile is correctly bound
       return _getTile.call(source, z, x, y, unlock);
     });
@@ -30,9 +44,7 @@ var enableCaching = function(uri, source, locker) {
   var _getGrid = source.getGrid;
 
   source.getGrid = locker(function(z, x, y, lock) {
-    var key = util.format("getGrid:%s/%d/%d/%d", JSON.stringify(uri), z, x, y);
-
-    return lock(key, function(unlock) {
+    return lock(makeKey("getGrid", this, z, x, y), function(unlock) {
       // .call is used so that getGrid is correctly bound
       return _getGrid.call(source, z, x, y, unlock);
     });
@@ -41,9 +53,7 @@ var enableCaching = function(uri, source, locker) {
   var _getInfo = source.getInfo;
 
   source.getInfo = locker(function(lock) {
-    var key = util.format("getInfo:%s", JSON.stringify(uri));
-
-    return lock(key, function(unlock) {
+    return lock(makeKey("getInfo", this), function(unlock) {
       // .call is used so that getInfo is correctly bound
       return _getInfo.call(source, unlock);
     });
