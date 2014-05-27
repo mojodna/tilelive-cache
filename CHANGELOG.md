@@ -1,5 +1,9 @@
 # Changes
 
+## v0.2.1 - 5/27/14
+
+* Depend on the correct version of `locking-cache`
+
 ## v0.2.0 - 5/22/14
 
 * Include callback properties in cache keys
