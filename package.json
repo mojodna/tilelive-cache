@@ -5,6 +5,6 @@
   "author": "Seth Fitzsimmons <seth@mojodna.net>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "locking-cache": "^0.1.2"
+    "locking-cache": "^0.2.0"
   }
 }
