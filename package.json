@@ -3,6 +3,10 @@
   "version": "0.2.1",
   "description": "A caching wrapper for tilelive.js",
   "author": "Seth Fitzsimmons <seth@mojodna.net>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mojodna/tilelive-cache.git"
+  },
   "license": "BSD-2-Clause",
   "dependencies": {
     "locking-cache": "^0.2.0"
