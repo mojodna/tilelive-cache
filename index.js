@@ -32,30 +32,27 @@ var enableCaching = function(uri, source, locker) {
     return key;
   };
 
-  var _getTile = source.getTile;
+  var _getTile = source.getTile.bind(source);
 
   source.getTile = locker(function(z, x, y, lock) {
     return lock(makeKey("getTile", this, z, x, y), function(unlock) {
-      // .call is used so that getTile is correctly bound
-      return _getTile.call(source, z, x, y, unlock);
+      return _getTile(z, x, y, unlock);
     });
   }).bind(source);
 
-  var _getGrid = source.getGrid;
+  var _getGrid = source.getGrid.bind(source);
 
   source.getGrid = locker(function(z, x, y, lock) {
     return lock(makeKey("getGrid", this, z, x, y), function(unlock) {
-      // .call is used so that getGrid is correctly bound
-      return _getGrid.call(source, z, x, y, unlock);
+      return _getGrid(z, x, y, unlock);
     });
   }).bind(source);
 
-  var _getInfo = source.getInfo;
+  var _getInfo = source.getInfo.bind(source);
 
   source.getInfo = locker(function(lock) {
     return lock(makeKey("getInfo", this), function(unlock) {
-      // .call is used so that getInfo is correctly bound
-      return _getInfo.call(source, unlock);
+      return _getInfo(unlock);
     });
   }).bind(source);
 
