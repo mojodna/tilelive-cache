@@ -1,5 +1,9 @@
 # Changes
 
+## v0.3.0 - 7/28/14
+
+* Don't cache when source URIs contain `?cache=false`
+
 ## v0.2.2 - 7/28/14
 
 * Allow cache size to be set to `0`
