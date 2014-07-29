@@ -1,5 +1,9 @@
 # Changes
 
+## v0.2.2 - 7/28/14
+
+* Handle sources without `{getGrid,getTile,getInfo}` methods
+
 ## v0.2.1 - 5/27/14
 
 * Depend on the correct version of `locking-cache`

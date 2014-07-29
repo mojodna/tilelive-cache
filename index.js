@@ -32,29 +32,35 @@ var enableCaching = function(uri, source, locker) {
     return key;
   };
 
-  var _getTile = source.getTile.bind(source);
+  if (source.getTile) {
+    var _getTile = source.getTile.bind(source);
 
-  source.getTile = locker(function(z, x, y, lock) {
-    return lock(makeKey("getTile", this, z, x, y), function(unlock) {
-      return _getTile(z, x, y, unlock);
-    });
-  }).bind(source);
+    source.getTile = locker(function(z, x, y, lock) {
+      return lock(makeKey("getTile", this, z, x, y), function(unlock) {
+        return _getTile(z, x, y, unlock);
+      });
+    }).bind(source);
+  }
 
-  var _getGrid = source.getGrid.bind(source);
+  if (source.getGrid) {
+    var _getGrid = source.getGrid.bind(source);
 
-  source.getGrid = locker(function(z, x, y, lock) {
-    return lock(makeKey("getGrid", this, z, x, y), function(unlock) {
-      return _getGrid(z, x, y, unlock);
-    });
-  }).bind(source);
+    source.getGrid = locker(function(z, x, y, lock) {
+      return lock(makeKey("getGrid", this, z, x, y), function(unlock) {
+        return _getGrid(z, x, y, unlock);
+      });
+    }).bind(source);
+  }
 
-  var _getInfo = source.getInfo.bind(source);
+  if (source.getInfo) {
+    var _getInfo = source.getInfo.bind(source);
 
-  source.getInfo = locker(function(lock) {
-    return lock(makeKey("getInfo", this), function(unlock) {
-      return _getInfo(unlock);
-    });
-  }).bind(source);
+    source.getInfo = locker(function(lock) {
+      return lock(makeKey("getInfo", this), function(unlock) {
+        return _getInfo(unlock);
+      });
+    }).bind(source);
+  }
 
   // TODO watch for collisions
   // http://raganwald.com/2014/04/10/mixins-forwarding-delegation.html may have
