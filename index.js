@@ -72,11 +72,12 @@ var enableCaching = function(uri, source, locker) {
 
 module.exports = function(tilelive, options) {
   options = options || {};
+  options.size = "size" in options ? options.size : 10;
 
   // defined outside enableCaching so that a single, shared cache will be used
   // (this requires that keys be namespaced appropriately)
   var locker = lockingCache({
-    max: 1024 * 1024 * (options.size || 10), // convert to MB
+    max: 1024 * 1024 * options.size, // convert to MB
     length: function(val) {
       return val[0] ? val[0].length : 1;
     },

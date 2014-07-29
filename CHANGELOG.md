@@ -2,6 +2,7 @@
 
 ## v0.2.2 - 7/28/14
 
+* Allow cache size to be set to `0`
 * Handle sources without `{getGrid,getTile,getInfo}` methods
 
 ## v0.2.1 - 5/27/14
