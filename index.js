@@ -100,7 +100,7 @@ module.exports = function(tilelive, options) {
 
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
-        if (!err) {
+        if (!err && options.size > 0) {
           source = enableCaching(uri, source, locker);
         }
 
