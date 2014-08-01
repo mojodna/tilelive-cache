@@ -89,9 +89,13 @@ module.exports = function(tilelive, options) {
   var lockedLoad = lockingCache({
     max: options.sources || 6,
     dispose: function(key, values) {
-      // the source will always be the first value since it's the first
-      // argument to unlock()
-      values[0].close(function() {});
+      // don't close the source immediately in case there are pending
+      // references to it that haven't requested tiles yet
+      setTimeout(function() {
+        // the source will always be the first value since it's the first
+        // argument to unlock()
+        values[0].close(function() {});
+      }, (options.closeDelay || 30) * 1000);
     }
   });
 

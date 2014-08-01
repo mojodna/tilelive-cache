@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.0 - 8/1/14
+
+* Add `options.closeDelay`
+
 ## v0.3.0 - 7/28/14
 
 * Don't cache when source URIs contain `?cache=false`

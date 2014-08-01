@@ -9,8 +9,14 @@ and data produced by their respective `getTile()` functions.
 ```javascript
 var tilelive = require("tilelive"),
     cache = require("tilelive-cache")(tilelive, {
-  size: 50 // 50MB cache
-});
+      size: 10,      // 10MB cache (the default)
+      sources: 6,    // cache a maximum of 6 sources (the default); you may
+                     // need to change this if you're using lots of
+                     // composed sources
+      closeDelay: 30 // wait 30s (the default) before closing sources when
+                     // they've been evicted; this should prevent drain errors in
+                     // tilelive-mapnik
+    });
 
 // ...
 
