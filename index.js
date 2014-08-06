@@ -74,6 +74,7 @@ module.exports = function(tilelive, options) {
   options = options || {};
   options.size = "size" in options && options.size ? options.size : null;
   options.size = options.size || 10;
+  options.sources = (options.sources | 0) || 6;
 
   // defined outside enableCaching so that a single, shared cache will be used
   // (this requires that keys be namespaced appropriately)
@@ -88,7 +89,7 @@ module.exports = function(tilelive, options) {
   var cache = Object.create(tilelive);
 
   var lockedLoad = lockingCache({
-    max: options.sources || 6,
+    max: options.sources,
     dispose: function(key, values) {
       // don't close the source immediately in case there are pending
       // references to it that haven't requested tiles yet
