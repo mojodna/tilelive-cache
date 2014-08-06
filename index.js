@@ -102,19 +102,18 @@ module.exports = function(tilelive, options) {
   });
 
   cache.load = lockedLoad(function(uri, lock) {
-    var key = JSON.stringify(uri),
-        expandedUri = uri;
-
     if (typeof(uri) === "string") {
-      expandedUri = url.parse(uri, true);
+      uri = url.parse(uri, true);
     }
+
+    var key = JSON.stringify(uri);
 
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
         if (!err &&
             options.size > 0 &&
-            expandedUri.query.cache !== false &&
-            expandedUri.query.cache !== "false") {
+            uri.query.cache !== false &&
+            uri.query.cache !== "false") {
           source = enableCaching(uri, source, locker);
         }
 
