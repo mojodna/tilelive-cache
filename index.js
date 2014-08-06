@@ -72,8 +72,7 @@ var enableCaching = function(uri, source, locker) {
 
 module.exports = function(tilelive, options) {
   options = options || {};
-  options.size = "size" in options && options.size ? options.size : null;
-  options.size = options.size || 10;
+  options.size = "size" in options && options.size !== undefined ? options.size : 10;
   options.sources = (options.sources | 0) || 6;
 
   // defined outside enableCaching so that a single, shared cache will be used
