@@ -1,5 +1,11 @@
 # Changes
 
+## v0.4.1 - 8/6/14
+
+* Fully normalize URIs so string and object forms match.
+* Handle `options` better (especially when keys are present with `undefined`
+  values).
+
 ## v0.4.0 - 8/1/14
 
 * Add `options.closeDelay`
