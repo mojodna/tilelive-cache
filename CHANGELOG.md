@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.2 - 10/14/14
+
+* Default `uri.query.cache` to `true`
+
 ## v0.4.1 - 8/6/14
 
 * Fully normalize URIs so string and object forms match.

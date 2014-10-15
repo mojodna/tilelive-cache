@@ -105,6 +105,9 @@ module.exports = function(tilelive, options) {
       uri = url.parse(uri, true);
     }
 
+    uri.query = uri.query || {};
+    uri.query.cache = "cache" in uri.query ? uri.query.cache : true;
+
     var key = JSON.stringify(uri);
 
     return lock(key, function(unlock) {
