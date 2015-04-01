@@ -1,5 +1,10 @@
 # Changes
 
+## v0.4.3 - 3/31/15
+
+* Hash cache keys to avoid excessive memory use (notable when `uri.xml` is
+  present)
+
 ## v0.4.2 - 10/14/14
 
 * Default `uri.query.cache` to `true`

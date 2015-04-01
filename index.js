@@ -1,6 +1,7 @@
 "use strict";
 
-var url = require("url"),
+var crypto = require("crypto"),
+    url = require("url"),
     util = require("util");
 
 var lockingCache = require("locking-cache");
@@ -27,7 +28,9 @@ var enableCaching = function(uri, source, locker) {
     // glue on any additional arguments using their JSON representation
     key += Array.prototype.slice.call(arguments, 2).map(JSON.stringify).join(",");
 
-    return key;
+    var sha1 = crypto.createHash("sha1");
+    sha1.update(key);
+    return sha1.digest("hex");
   };
 
   if (source.getTile) {
@@ -106,7 +109,9 @@ module.exports = function(tilelive, options) {
     uri.query = uri.query || {};
     uri.query.cache = "cache" in uri.query ? uri.query.cache : true;
 
-    var key = JSON.stringify(uri);
+    var sha1 = crypto.createHash("sha1");
+    sha1.update(JSON.stringify(uri));
+    var key = sha1.digest("hex");
 
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
