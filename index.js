@@ -12,10 +12,6 @@ var enableCaching = function(uri, source, locker) {
     return source;
   }
 
-  if (typeof(uri) === "string") {
-    uri = url.parse(uri, true);
-  }
-
   var makeKey = function(name, context) {
     // collect properties attached to the callback
     var properties = {};
