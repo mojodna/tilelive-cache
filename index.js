@@ -13,7 +13,9 @@ var enableCaching = function(uri, source, locker) {
     return source;
   }
 
-  var uriKeyComponent = JSON.stringify(uri);
+  var uriSha1 = crypto.createHash("sha1");
+  uriSha1.update(JSON.stringify(uri));
+  var uriHash = uriSha1.digest("hex");
 
   var makeKey = function(name, context) {
     // collect properties attached to the callback
@@ -23,7 +25,7 @@ var enableCaching = function(uri, source, locker) {
       properties[k] = context.callback[k];
     });
 
-    var key = util.format("%s:%s@%j", name, uriKeyComponent, properties);
+    var key = util.format("%s:%s@%j", name, uriHash, properties);
 
     // glue on any additional arguments using their JSON representation
     key += Array.prototype.slice.call(arguments, 2).map(JSON.stringify).join(",");

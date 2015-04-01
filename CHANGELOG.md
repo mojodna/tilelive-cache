@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.4 - 4/1/15
+
+* Reduce the size of the repeated URI sub-key to limit memory pressure.
+
 ## v0.4.3 - 3/31/15
 
 * Hash cache keys to avoid excessive memory use (notable when `uri.xml` is
