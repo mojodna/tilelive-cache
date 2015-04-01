@@ -12,6 +12,8 @@ var enableCaching = function(uri, source, locker) {
     return source;
   }
 
+  var uriKeyComponent = JSON.stringify(uri);
+
   var makeKey = function(name, context) {
     // collect properties attached to the callback
     var properties = {};
@@ -20,7 +22,7 @@ var enableCaching = function(uri, source, locker) {
       properties[k] = context.callback[k];
     });
 
-    var key = util.format("%s:%j@%j", name, uri, properties);
+    var key = util.format("%s:%s@%j", name, uriKeyComponent, properties);
 
     // glue on any additional arguments using their JSON representation
     key += Array.prototype.slice.call(arguments, 2).map(JSON.stringify).join(",");
