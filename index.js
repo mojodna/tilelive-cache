@@ -112,7 +112,13 @@ module.exports = function(tilelive, options) {
     }
 
     uri.query = uri.query || {};
-    uri.query.cache = "cache" in uri.query ? uri.query.cache : true;
+    var useCache = true;
+
+    try {
+      useCache = "cache" in uri.query ? JSON.parse(uri.query.cache) : useCache;
+    } catch (err) {
+      console.warn(err.stack);
+    }
 
     var sha1 = crypto.createHash("sha1");
     sha1.update(JSON.stringify(uri));
@@ -122,8 +128,7 @@ module.exports = function(tilelive, options) {
       return tilelive.load(uri, function(err, source) {
         if (!err &&
             options.size > 0 &&
-            uri.query.cache !== false &&
-            uri.query.cache !== "false") {
+            useCache) {
           source = enableCaching(uri, source, locker);
         }
 

@@ -1,5 +1,10 @@
 # Changes
 
+## v0.4.5 - 5/9/15
+
+* Don't modify URLs; `?cache=true` was previously being appended. It will
+  continue to be respected if provided.
+
 ## v0.4.4 - 4/1/15
 
 * Reduce the size of the repeated URI sub-key to limit memory pressure.
