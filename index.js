@@ -4,7 +4,8 @@ var crypto = require("crypto"),
     url = require("url"),
     util = require("util");
 
-var lockingCache = require("locking-cache");
+var clone = require("clone"),
+    lockingCache = require("locking-cache");
 
 var enableCaching = function(uri, source, locker) {
   if (source._cached) {
@@ -106,6 +107,8 @@ module.exports = function(tilelive, options) {
   cache.load = lockedLoad(function(uri, lock) {
     if (typeof(uri) === "string") {
       uri = url.parse(uri, true);
+    } else {
+      uri = clone(uri);
     }
 
     uri.query = uri.query || {};

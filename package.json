@@ -9,6 +9,7 @@
   },
   "license": "BSD-2-Clause",
   "dependencies": {
+    "clone": "^1.0.2",
     "locking-cache": "^0.2.0"
   }
 }
