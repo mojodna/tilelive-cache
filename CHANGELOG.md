@@ -1,6 +1,6 @@
 # Changes
 
-## v0.5.0
+## v0.5.0 - 7/21/15
 
 * `tilelive-streaming`-powered proactive metatile caching.
 
