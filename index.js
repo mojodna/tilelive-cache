@@ -8,6 +8,7 @@ var clone = require("clone"),
     lockingCache = require("locking-cache");
 
 var enableCaching = function(uri, source, locker) {
+  // TODO use ES6 Symbols to prevent collisions
   if (source._cached) {
     // already cached
 
