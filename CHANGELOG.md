@@ -1,5 +1,9 @@
 # Changes
 
+## v0.5.0
+
+* `tilelive-streaming`-powered proactive metatile caching.
+
 ## v0.4.5 - 5/9/15
 
 * Don't modify URLs; `?cache=true` was previously being appended. It will
