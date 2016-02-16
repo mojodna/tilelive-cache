@@ -1,5 +1,9 @@
 # Changes
 
+## v0.5.2 - 2/16/16
+
+* Fix cache handling for items w/o `.length` (@petrsloup)
+
 ## v0.5.1 - 7/22/15
 
 * Update `tilelive-streaming` to v0.5.1
