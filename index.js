@@ -179,7 +179,7 @@ module.exports = function(tilelive, options) {
   var locker = lockingCache({
     max: 1024 * 1024 * options.size, // convert to MB
     length: function(val) {
-      return val[0] ? val[0].length : 1;
+      return (val[0] && val[0].length) ? val[0].length : 1;
     },
     maxAge: 6 * 3600e3 // 6 hours
   });
