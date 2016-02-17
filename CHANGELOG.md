@@ -1,5 +1,9 @@
 # Changes
 
+## v0.6.0
+
+* Remove `close()`d sources from the cache.
+
 ## v0.5.2 - 2/16/16
 
 * Fix cache handling for items w/o `.length` (@petrsloup)

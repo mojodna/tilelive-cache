@@ -70,103 +70,6 @@ var getContextCallbackProperties = function(context) {
   return properties;
 };
 
-var enableCaching = function(uri, source, locker) {
-  // TODO use ES6 Symbols to prevent collisions
-  if (source._cached) {
-    // already cached
-
-    return source;
-  }
-
-  var uriSha1 = crypto.createHash("sha1");
-  uriSha1.update(JSON.stringify(uri));
-  var uriHash = uriSha1.digest("hex");
-
-  var makeKey = function(name, properties) {
-    properties = properties || {};
-
-    var key = util.format("%s:%s@%j", name, uriHash, properties);
-
-    // glue on any additional arguments using their JSON representation
-    key += Array.prototype.slice.call(arguments, 2).map(JSON.stringify).join(",");
-
-    var sha1 = crypto.createHash("sha1");
-    sha1.update(key);
-    return sha1.digest("hex");
-  };
-
-  if (source.getTile) {
-    var _getTile = source.getTile.bind(source);
-
-    source.getTile = locker(function(z, x, y, lock) {
-      var properties = getContextCallbackProperties(this);
-
-      // lock neighboring tiles when metatiling (if the source is streamable)
-      if (source.pipe && source.metatile && source.metatile > 1) {
-        // TODO extract this (also used in tilelive-streaming)
-        // get neighboring tiles within the same metatile
-        var dx = x % source.metatile,
-            dy = y % source.metatile,
-            metaX = x - dx,
-            metaY = y - dy;
-
-        for (var ix = metaX; ix < metaX + source.metatile; ix++) {
-          for (var iy = metaY; iy < metaY + source.metatile; iy++) {
-            // ignore the current tile
-            if (!(ix === x && iy === y)) {
-              var key = makeKey("getTile", properties, z, ix, iy);
-
-              if (!locker.locks.get(key)) {
-                // lock it with an empty list of callbacks (nothing to notify)
-                locker.locks.set(key, []);
-              }
-            }
-          }
-        }
-      }
-
-      return lock(makeKey("getTile", properties, z, x, y), function(unlock) {
-        return _getTile(z, x, y, unlock);
-      });
-    }).bind(source);
-  }
-
-  if (source.getGrid) {
-    var _getGrid = source.getGrid.bind(source);
-
-    source.getGrid = locker(function(z, x, y, lock) {
-      return lock(makeKey("getGrid", getContextCallbackProperties(this), z, x, y), function(unlock) {
-        return _getGrid(z, x, y, unlock);
-      });
-    }).bind(source);
-  }
-
-  if (source.getInfo) {
-    var _getInfo = source.getInfo.bind(source);
-
-    source.getInfo = locker(function(lock) {
-      return lock(makeKey("getInfo", getContextCallbackProperties(this)), function(unlock) {
-        return _getInfo(unlock);
-      });
-    }).bind(source);
-  }
-
-  var target = new stream.Writable({
-    objectMode: true,
-    highWaterMark: 16 // arbitrary backlog sizing
-  });
-
-  target._write = function(tile, _, callback) {
-    tile.pipe(new CacheCollector(locker, makeKey).on("finish", callback));
-  };
-
-  source.pipe(target);
-
-  source._cached = true;
-
-  return source;
-};
-
 module.exports = function(tilelive, options) {
   tilelive = enableStreaming(tilelive);
 
@@ -189,15 +92,126 @@ module.exports = function(tilelive, options) {
   var lockedLoad = lockingCache({
     max: options.sources,
     dispose: function(key, values) {
-      // don't close the source immediately in case there are pending
-      // references to it that haven't requested tiles yet
-      setTimeout(function() {
-        // the source will always be the first value since it's the first
-        // argument to unlock()
-        values[0].close(function() {});
-      }, (options.closeDelay || 30) * 1000);
+      // the source will always be the first value since it's the first
+      // argument to unlock()
+      values[0].close();
     }
   });
+
+  var enableCaching = function(source, sourceKey) {
+    // TODO use ES6 Symbols to prevent collisions
+    if (source._cached) {
+      // already cached
+
+      return source;
+    }
+
+    var makeKey = function(name, properties) {
+      properties = properties || {};
+
+      var key = util.format("%s:%s@%j", name, sourceKey, properties);
+
+      // glue on any additional arguments using their JSON representation
+      key += Array.prototype.slice.call(arguments, 2).map(JSON.stringify).join(",");
+
+      var sha1 = crypto.createHash("sha1");
+      sha1.update(key);
+      return sha1.digest("hex");
+    };
+
+    if (source.getTile) {
+      var _getTile = source.getTile.bind(source);
+
+      source.getTile = locker(function(z, x, y, lock) {
+        var properties = getContextCallbackProperties(this);
+
+        // lock neighboring tiles when metatiling (if the source is streamable)
+        if (source.pipe && source.metatile && source.metatile > 1) {
+          // TODO extract this (also used in tilelive-streaming)
+          // get neighboring tiles within the same metatile
+          var dx = x % source.metatile,
+              dy = y % source.metatile,
+              metaX = x - dx,
+              metaY = y - dy;
+
+          for (var ix = metaX; ix < metaX + source.metatile; ix++) {
+            for (var iy = metaY; iy < metaY + source.metatile; iy++) {
+              // ignore the current tile
+              if (!(ix === x && iy === y)) {
+                var key = makeKey("getTile", properties, z, ix, iy);
+
+                if (!locker.locks.get(key)) {
+                  // lock it with an empty list of callbacks (nothing to notify)
+                  locker.locks.set(key, []);
+                }
+              }
+            }
+          }
+        }
+
+        return lock(makeKey("getTile", properties, z, x, y), function(unlock) {
+          return _getTile(z, x, y, unlock);
+        });
+      }).bind(source);
+    }
+
+    if (source.getGrid) {
+      var _getGrid = source.getGrid.bind(source);
+
+      source.getGrid = locker(function(z, x, y, lock) {
+        return lock(makeKey("getGrid", getContextCallbackProperties(this), z, x, y), function(unlock) {
+          return _getGrid(z, x, y, unlock);
+        });
+      }).bind(source);
+    }
+
+    if (source.getInfo) {
+      var _getInfo = source.getInfo.bind(source);
+
+      source.getInfo = locker(function(lock) {
+        return lock(makeKey("getInfo", getContextCallbackProperties(this)), function(unlock) {
+          return _getInfo(unlock);
+        });
+      }).bind(source);
+    }
+
+    var _close = function(callback) {
+      return callback();
+    };
+
+    if (source.close) {
+      _close = source.close.bind(source);
+    }
+
+    source.close = function(callback) {
+      callback = callback || function() {};
+
+      // remove this from the source cache
+      if (lockedLoad.cache.has(sourceKey)) {
+        // queue deletion (otherwise the cache's dispose calls this)
+        setImmediate(function() {
+          lockedLoad.cache.del(sourceKey);
+        });
+      }
+
+      return _close(callback);
+    }
+
+    var target = new stream.Writable({
+      objectMode: true,
+      highWaterMark: 16 // arbitrary backlog sizing
+    });
+
+    target._write = function(tile, _, callback) {
+      tile.pipe(new CacheCollector(locker, makeKey).on("finish", callback));
+    };
+
+    source.pipe(target);
+
+    source._cached = true;
+
+    return source;
+  };
 
   cache.load = lockedLoad(function(uri, lock) {
     if (typeof uri === "string") {
@@ -215,16 +229,14 @@ module.exports = function(tilelive, options) {
       console.warn(err.stack);
     }
 
-    var sha1 = crypto.createHash("sha1");
-    sha1.update(JSON.stringify(uri));
-    var key = sha1.digest("hex");
+    var key = crypto.createHash("sha1").update(JSON.stringify(uri)).digest("hex");
 
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
         if (!err &&
             options.size > 0 &&
             useCache) {
-          source = enableCaching(uri, source, locker);
+          source = enableCaching(source, key);
         }
 
         return unlock(err, source);
