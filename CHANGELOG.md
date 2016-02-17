@@ -1,5 +1,9 @@
 # Changes
 
+## v0.6.1 - 2/16/16
+
+* Upgrade to `tilelive-streaming@0.6.1` with improved handling of empty tiles.
+
 ## v0.6.0 - 2/16/16
 
 * Remove `close()`d sources from the cache.
