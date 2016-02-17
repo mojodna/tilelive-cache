@@ -187,7 +187,12 @@ module.exports = function(tilelive, options) {
       callback = callback || function() {};
 
       // remove this from the source cache
-      lockedLoad.cache.del(sourceKey);
+      if (lockedLoad.cache.has(sourceKey)) {
+        // queue deletion (otherwise the cache's dispose calls this)
+        setImmediate(function() {
+          lockedLoad.cache.del(sourceKey);
+        });
+      }
 
       return _close(callback);
     }
