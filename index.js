@@ -94,7 +94,11 @@ module.exports = function(tilelive, options) {
     dispose: function(key, values) {
       // the source will always be the first value since it's the first
       // argument to unlock()
-      values[0].close();
+      setImmediate(function() {
+        // queue it to avoid infinite recursion (since `close()` will remove it
+        // from the cache)
+        values[0].close();
+      });
     }
   });
 
@@ -188,10 +192,7 @@ module.exports = function(tilelive, options) {
 
       // remove this from the source cache
       if (lockedLoad.cache.has(sourceKey)) {
-        // queue deletion (otherwise the cache's dispose calls this)
-        setImmediate(function() {
-          lockedLoad.cache.del(sourceKey);
-        });
+        lockedLoad.cache.del(sourceKey);
       }
 
       return _close(callback);

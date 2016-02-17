@@ -1,5 +1,10 @@
 # Changes
 
+## v0.6.2 - 2/17/16
+
+* Flip `setImmediate` queuing of source closure so that sources are removed as
+  early as possible.
+
 ## v0.6.1 - 2/16/16
 
 * Upgrade to `tilelive-streaming@0.6.1` with improved handling of empty tiles.
