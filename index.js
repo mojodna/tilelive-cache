@@ -215,9 +215,7 @@ module.exports = function(tilelive, options) {
       console.warn(err.stack);
     }
 
-    var sha1 = crypto.createHash("sha1");
-    sha1.update(JSON.stringify(uri));
-    var key = sha1.digest("hex");
+    var key = crypto.createHash("sha1").update(JSON.stringify(uri)).digest("hex");
 
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
