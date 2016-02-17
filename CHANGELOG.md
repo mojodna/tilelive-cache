@@ -1,8 +1,10 @@
 # Changes
 
-## v0.6.0
+## v0.6.0 - 2/16/16
 
 * Remove `close()`d sources from the cache.
+* Eliminate `closeDelay` as removal of closed sources addresses the same issue
+  more cleanly.
 
 ## v0.5.2 - 2/16/16
 
