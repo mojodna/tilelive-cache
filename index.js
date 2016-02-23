@@ -204,6 +204,10 @@ module.exports = function(tilelive, options) {
     });
 
     target._write = function(tile, _, callback) {
+      tile.on("error", function(err) {
+        console.warn("Error reading %d/%d/%d:", tile.z, tile.x, tile.y, err.stack);
+      });
+
       tile.pipe(new CacheCollector(locker, makeKey).on("finish", callback));
     };
 

@@ -1,5 +1,9 @@
 # Changes
 
+## v0.6.3 - 2/22/16
+
+* Attach an error handler to prevent `getTile` failures from terminating Node.
+
 ## v0.6.2 - 2/17/16
 
 * Flip `setImmediate` queuing of source closure so that sources are removed as
