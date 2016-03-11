@@ -14,10 +14,16 @@ var CacheCollector = function(locker, makeKey) {
 
   var chunks = [],
       headers = {},
-      tile;
+      tile,
+      error;
 
   this.on("pipe", function(src) {
     tile = src;
+
+    tile.on("error", function(err) {
+      console.warn("Error reading %d/%d/%d:", tile.z, tile.x, tile.y, err.stack);
+      error = err;
+    });
   });
 
   this.setHeader = function(header, value) {
@@ -36,11 +42,13 @@ var CacheCollector = function(locker, makeKey) {
 
     var key = makeKey("getTile", tile.context, tile.z, tile.x, tile.y),
         waiting = locker.locks.get(key) || [],
-        args = [null, buf, headers],
+        args = [error, buf, headers],
         data = args.slice(1);
 
     // populate the cache
-    locker.cache.set(key, data);
+    if (error == null) {
+      locker.cache.set(key, data);
+    }
 
     // unlock the target
     locker.locks.del(key);

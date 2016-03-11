@@ -1,5 +1,9 @@
 # Changes
 
+## v0.6.4 - 3/11/16
+
+* Pass upstream errors forward and skip the cache
+
 ## v0.6.3 - 2/22/16
 
 * Attach an error handler to prevent `getTile` failures from terminating Node.
