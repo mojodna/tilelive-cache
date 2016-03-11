@@ -3,6 +3,8 @@
 ## v0.6.4 - 3/11/16
 
 * Pass upstream errors forward and skip the cache
+* Rely on `TileStream`'s (`tilelive-streaming`) error handler to prevent non-
+  fatal errors from bubbling up and terminating Node.
 
 ## v0.6.3 - 2/22/16
 
