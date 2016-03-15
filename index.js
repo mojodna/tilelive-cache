@@ -240,6 +240,12 @@ module.exports = function(tilelive, options) {
 
     var key = crypto.createHash("sha1").update(JSON.stringify(uri)).digest("hex");
 
+    // mangle the URI after the key has been generated
+    if (uri.protocol === "mapnik:") {
+      // disable mapnik's internal cache
+      uri.query.internal_cache = false;
+    }
+
     return lock(key, function(unlock) {
       return tilelive.load(uri, function(err, source) {
         if (!err &&
