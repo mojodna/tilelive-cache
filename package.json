@@ -1,6 +1,6 @@
 {
   "name": "tilelive-cache",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "A caching wrapper for tilelive.js",
   "author": "Seth Fitzsimmons <seth@mojodna.net>",
   "repository": {
