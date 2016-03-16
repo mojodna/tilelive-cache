@@ -152,7 +152,7 @@ module.exports = function(tilelive, options) {
               if (!(ix === x && iy === y)) {
                 var key = makeKey("getTile", properties, z, ix, iy);
 
-                if (!locker.locks.get(key)) {
+                if (!locker.locks.get(key) && !locker.cache.get(key)) {
                   // lock it with an empty list of callbacks (nothing to notify)
                   locker.locks.set(key, []);
                 }

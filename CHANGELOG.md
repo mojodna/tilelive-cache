@@ -1,5 +1,9 @@
 # Changes
 
+## v0.6.5 - 3/15/16
+
+* Prevent lock leakage when cache entries already exist.
+
 ## v0.6.4 - 3/11/16
 
 * Pass upstream errors forward and skip the cache
