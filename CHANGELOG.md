@@ -3,6 +3,7 @@
 ## v0.7.0 - 7/8/16
 
 * Respect `max-age` in `Cache-Control` header.
+* Upgrade `tilelive-streaming`.
 
 ## v0.6.5 - 3/15/16
 

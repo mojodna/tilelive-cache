@@ -11,6 +11,6 @@
   "dependencies": {
     "clone": "^1.0.2",
     "locking-cache": "^0.3.0",
-    "tilelive-streaming": "^0.6.3"
+    "tilelive-streaming": "^0.7.4"
   }
 }
