@@ -43,7 +43,7 @@ var CacheCollector = function(locker, makeKey) {
     var key = makeKey("getTile", tile.context, tile.z, tile.x, tile.y),
         waiting = locker.locks.get(key) || [],
         args = [error, buf, headers],
-        data = args.slice(1)
+        data = args.slice(1),
         maxAge = (headers["Cache-Control"] || headers["cache-control"] || "")
           .split(",")
           .map(function(x) {
