@@ -43,11 +43,27 @@ var CacheCollector = function(locker, makeKey) {
     var key = makeKey("getTile", tile.context, tile.z, tile.x, tile.y),
         waiting = locker.locks.get(key) || [],
         args = [error, buf, headers],
-        data = args.slice(1);
+        data = args.slice(1)
+        maxAge = (headers["Cache-Control"] || headers["cache-control"] || "")
+          .split(",")
+          .map(function(x) {
+            return x.trim();
+          })
+          .filter(function(x) {
+            return x.match(/^max-age=/);
+          })
+          .map(function(x) {
+            return x.split("=")[1];
+          })
+          .filter(function(x) {
+            return x != null;
+          })
+          .shift();
 
     // populate the cache
-    if (error == null) {
-      locker.cache.set(key, data);
+    if (error == null &&
+        (maxAge == null || (maxAge | 0) > 0)) {
+      locker.cache.set(key, data, maxAge);
     }
 
     // unlock the target

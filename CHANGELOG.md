@@ -1,5 +1,9 @@
 # Changes
 
+## v0.7.0 - 7/8/16
+
+* Respect `max-age` in `Cache-Control` header.
+
 ## v0.6.5 - 3/15/16
 
 * Prevent lock leakage when cache entries already exist.
