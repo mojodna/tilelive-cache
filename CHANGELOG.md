@@ -1,9 +1,5 @@
 # Changes
 
-## v0.7.1 - 7/8/16
-
-* Fixed typo.
-
 ## v0.7.0 - 7/8/16
 
 * Respect `max-age` in `Cache-Control` header.
