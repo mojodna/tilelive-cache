@@ -60,9 +60,11 @@ var CacheCollector = function(locker, makeKey) {
           })
           .shift();
 
+    maxAge = parseInt(maxAge) * 1000 || null;
+
     // populate the cache
     if (error == null &&
-        (maxAge == null || (maxAge | 0) > 0)) {
+        (maxAge == null || maxAge > 0)) {
       locker.cache.set(key, data, maxAge);
     }
 
