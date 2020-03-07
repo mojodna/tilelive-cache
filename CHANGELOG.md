@@ -1,5 +1,13 @@
 # Changes
 
+## v0.7.2 - 3/7/20
+
+* Fix `max-age` math (seconds vs. ms). (@leonardehrenfried)
+
+## v0.7.1 - 7/8/16
+
+* Typo fix.
+
 ## v0.7.0 - 7/8/16
 
 * Respect `max-age` in `Cache-Control` header.
